@@ -1,7 +1,7 @@
 use rusqlite::{Connection, Error};
 use serde::{Deserialize, Serialize};
 
-use crate::utils::constants::db::ARTICLE_TABLE_NAME;
+use crate::utils::constants::db::article;
 
 use super::{author::Author, article_image::ArticleImage};
 
@@ -22,7 +22,7 @@ impl Default for Article {
 
 
 pub fn get_all_articles(conn: &Connection) -> Result<Vec<Article>, Error> {
-    let mut stmt = conn.prepare(&format!("SELECT * FROM {}", ARTICLE_TABLE_NAME))?;
+    let mut stmt = conn.prepare(&format!("SELECT * FROM {}", article::TABLE_NAME))?;
 
     let article_iter = stmt.query_map([], |row| {
         Ok(row.get(0)?)

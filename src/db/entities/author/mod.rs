@@ -1,7 +1,8 @@
 use rusqlite::{Connection, Statement};
 use serde::{Deserialize, Serialize};
 
-use crate::utils::constants::db::author::{AUTHOR_TABLE_NAME, AUTHOR_USERNAME};
+use crate::utils::constants::db::author;
+
 
 
 #[derive(Deserialize, Serialize)]
@@ -17,7 +18,7 @@ impl Default for Author {
 
 
 pub fn get_all_authors(conn: &Connection) -> Result<Vec<Author>, rusqlite::Error> {
-    let mut stmt = conn.prepare(&format!("SELECT username FROM {}", AUTHOR_TABLE_NAME))?;
+    let mut stmt = conn.prepare(&format!("SELECT username FROM {}", author::TABLE_NAME))?;
 
     let author_iter = stmt.query_map([], |row| {
         Ok(row.get(0)?)
@@ -42,7 +43,7 @@ pub fn get_all_authors(conn: &Connection) -> Result<Vec<Author>, rusqlite::Error
 
 
 pub fn get_authors_by_username(conn: &Connection, username: String) -> Result<Vec<Author>, rusqlite::Error> {
-    let mut stmt = conn.prepare(&format!("SELECT username FROM {} WHERE username LIKE ?1", AUTHOR_TABLE_NAME))?;
+    let mut stmt = conn.prepare(&format!("SELECT username FROM {} WHERE username LIKE ?1", author::TABLE_NAME))?;
 
     // Places the username, where (?1) is, sanitizing the username
     let author_iter = stmt.query_map([&username], |row| {
