@@ -7,11 +7,11 @@ pub mod db {
         pub const TABLE_NAME: &str = "user";
 
         pub const ID: &str = "id";
-        pub const FIRST_NAME: &str = "";
-        pub const LAST_NAME: &str = "";
-        pub const DISPLAY_NAME: &str = "";
-        pub const EMAIL: &str = "";
-        pub const PASSWORD: &str = "";
+        pub const FIRST_NAME: &str = "first_name";
+        pub const LAST_NAME: &str = "last_name";
+        pub const DISPLAY_NAME: &str = "display_name";
+        pub const EMAIL: &str = "email";
+        pub const PASSWORD: &str = "password";
 
         pub const FIELDS: [&str; 6] = [
             ID,
@@ -58,16 +58,14 @@ pub mod db {
         pub const ID: &str = "id";
         pub const TITLE: &str = "title";
         pub const MARKDOWN_PATH: &str = "markdown_path";
-        pub const IMAGES: &str = "images";
         pub const AUTHOR: &str = "author";
         pub const CREATED_AT: &str = "created_at";
         pub const TAGS: &str = "tags";
 
-        pub const FIELDS: [&str; 6] = [
+        pub const FIELDS: [&str; 5] = [
             ID,
             TITLE,
             MARKDOWN_PATH,
-            IMAGES,
             CREATED_AT,
             TAGS
         ];
