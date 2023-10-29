@@ -1,10 +1,9 @@
 pub mod db {
     pub const DB_NAME: &str = "gnf";
     pub const DB_PATH: &str = "gnf.db";
-    pub const DB_SEPERATOR: &str = ",";
     
     pub mod author {
-        pub const TABLE_NAME: &str = "user";
+        pub const TABLE_NAME: &str = "author";
 
         pub const ID: &str = "id";
         pub const FIRST_NAME: &str = "first_name";
@@ -62,9 +61,10 @@ pub mod db {
         pub const CREATED_AT: &str = "created_at";
         pub const TAGS: &str = "tags";
 
-        pub const FIELDS: [&str; 5] = [
+        pub const FIELDS: [&str; 6] = [
             ID,
             TITLE,
+            AUTHOR,
             MARKDOWN_PATH,
             CREATED_AT,
             TAGS

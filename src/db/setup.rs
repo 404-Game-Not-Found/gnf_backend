@@ -6,6 +6,8 @@ use super::create_connection;
 
 
 pub fn setup() -> Result<(), rusqlite::Error> {
+    let _ = std::fs::remove_file(DB_PATH);
+
     let conn = create_connection()?;
     
     create_author_table(&conn)?;
@@ -19,22 +21,6 @@ pub fn setup() -> Result<(), rusqlite::Error> {
     create_article_tags_table(&conn)?;
     
     create_image_tags_table(&conn)?;
-
-    conn.execute("PRAGMA foreign_keys=ON;", [])?;
-
-    let mut stmt = conn.prepare(
-        "ALTER (?1) ADD FOREIGN KEY (?2) REFERENCES (?3)(id)"
-    )?;
-
-    stmt.execute([article::TABLE_NAME, author::TABLE_NAME, author::TABLE_NAME])?;
-    
-    stmt.execute([article_tags::TABLE_NAME, article::TABLE_NAME, article::TABLE_NAME])?;
-    
-    stmt.execute([article_tags::TABLE_NAME, tags::TABLE_NAME, tags::TABLE_NAME])?;
-    
-    stmt.execute([image_tags::TABLE_NAME, image::TABLE_NAME, image::TABLE_NAME])?;
-    
-    stmt.execute([image_tags::TABLE_NAME, tags::TABLE_NAME, tags::TABLE_NAME])?;
 
     Ok(())
 }
@@ -69,18 +55,24 @@ pub fn create_article_table(conn: &Connection) -> Result<usize, rusqlite::Error>
     let mut stmt = conn.prepare(
         &format!(
             "CREATE TABLE IF NOT EXISTS {} (
-                {} {} {} {},
+                {} {} {} {}, 
                 {} {},
                 {} {},
                 {} {},
-                {} {}
+                {} {},
+                {} {},
+                FOREIGN KEY ({}) REFERENCES {}({}),
+                FOREIGN KEY ({}) REFERENCES {}({})
             );",
             article::TABLE_NAME,
             article::ID, "INTEGER", "PRIMARY", "KEY",
             article::TITLE, "TEXT",
             article::MARKDOWN_PATH, "TEXT",
+            article::AUTHOR, "INTEGER",
             article::TAGS, "INTEGER",
-            article::CREATED_AT, "DATETIME"
+            article::CREATED_AT, "DATETIME",
+            article::TAGS, tags::TABLE_NAME, tags::ID,
+            article::AUTHOR, author::TABLE_NAME, author::ID,
         )
     )?;
 
@@ -98,7 +90,8 @@ pub fn create_image_table(conn: &Connection) -> Result<usize, rusqlite::Error> {
             );",
             image::TABLE_NAME,
             image::ID, "INTEGER", "PRIMARY", "KEY",
-            image::IMAGE_PATH, "TEXT"
+            image::IMAGE_PATH, "TEXT",
+
         )
     )?;
 
@@ -130,12 +123,16 @@ pub fn create_article_tags_table(conn: &Connection) -> Result<usize, rusqlite::E
             "CREATE TABLE IF NOT EXISTS {} (
                 {} {} {} {},
                 {} {},
-                {} {}
+                {} {},
+                FOREIGN KEY ({}) REFERENCES {}({}),
+                FOREIGN KEY ({}) REFERENCES {}({})
             );",
             article_tags::TABLE_NAME,
             article_tags::ID, "INTEGER", "PRIMARY", "KEY",
             article_tags::ARTICLE, "INTEGER",
-            article_tags::TAG, "INTEGER"
+            article_tags::TAG, "INTEGER",
+            article_tags::ARTICLE, article::TABLE_NAME, article::ID,
+            article_tags::TAG, image::TABLE_NAME, image::ID,
         )
     )?;
 
@@ -150,12 +147,16 @@ pub fn create_image_tags_table(conn: &Connection) -> Result<usize, rusqlite::Err
             "CREATE TABLE IF NOT EXISTS {} (
                 {} {} {} {},
                 {} {},
-                {} {}
+                {} {},
+                FOREIGN KEY ({}) REFERENCES {}({}),
+                FOREIGN KEY ({}) REFERENCES {}({})
             );",
             image_tags::TABLE_NAME,
             image_tags::ID, "INTEGER", "PRIMARY", "KEY",
             image_tags::IMAGE, "INTEGER",
-            image_tags::TAG, "INTEGER"
+            image_tags::TAG, "INTEGER",
+            image_tags::IMAGE, image::TABLE_NAME, image::ID,
+            image_tags::TAG, tags::TABLE_NAME, tags::ID
         )
     )?;
 

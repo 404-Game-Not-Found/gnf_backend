@@ -1,9 +1,9 @@
-use std::fmt::format;
+
 
 use rusqlite::Connection;
 use serde::{Deserialize, Serialize};
 
-use crate::utils::constants::db::{image, image_tags::IMAGE, DB_SEPERATOR};
+use crate::utils::constants::db::image;
 
 
 #[derive(Deserialize, Serialize)]
@@ -29,7 +29,7 @@ pub fn get_images_by_id(conn: &Connection, id: String) -> Result<Vec<ArticleImag
                     ArticleImage {
                         source: src,
                         tags: tg
-                            .split(DB_SEPERATOR) // TODO: Change to another query
+                            .split(",") // TODO: Change to another query
                             .map(|s| s.to_string())
                             .collect::<Vec<String>>() }
             )
@@ -52,7 +52,7 @@ pub fn get_images_by_tags(conn: &Connection, tags: Vec<String>) -> Result<Vec<Ar
 
                 let img = ArticleImage {
                     source: src,
-                    tags: tg.split(DB_SEPERATOR).map(|s| s.to_string()).collect::<Vec<String>>(),
+                    tags: tg.split(",").map(|s| s.to_string()).collect::<Vec<String>>(),
                 };
 
                 for t in tags.clone() {

@@ -16,7 +16,12 @@ pub struct Article {
 
 impl Default for Article {
     fn default() -> Self {
-        Self { author: Default::default(), content: "DEFAULT CONTENT".to_string(), images: Default::default(), tags: Default::default() }
+        Self { 
+            author: Default::default(),
+            content: "DEFAULT CONTENT".to_string(),
+            images: Default::default(),
+            tags: Default::default()
+        }
     }
 }
 

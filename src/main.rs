@@ -2,6 +2,7 @@ mod db;
 mod utils;
 
 use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use db::setup::setup;
 
 #[get("/")]
 async fn hello() -> impl Responder {
@@ -14,7 +15,11 @@ async fn echo(req_body: String) -> impl Responder {
 }
 
 async fn manual_hello() -> impl Responder {
-    HttpResponse::Ok().body("Hey there!")
+
+    match setup() {
+        Ok(_) => HttpResponse::Ok().body("Hey there!"),
+        Err(err) => HttpResponse::Ok().body(format!("Error:, {}", err)),
+    }
 }
 
 #[actix_web::main]
