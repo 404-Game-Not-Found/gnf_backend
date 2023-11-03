@@ -4,3 +4,4 @@ target/
 *.pdb
 .vscode
 *.db
+uploads/
